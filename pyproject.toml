@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kutarya-cascade"
+version = "0.1.0"
+description = "Risk-aware prompt inspection, integrity protection, compression and real inference benchmarking"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "Kutarya" }]
+keywords = ["llm", "prompt-compression", "benchmark", "llama-cpp", "integrity"]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Kutarya/Kutarya-Cascade"
+Repository = "https://github.com/Kutarya/Kutarya-Cascade"
+Issues = "https://github.com/Kutarya/Kutarya-Cascade/issues"
+
+[project.optional-dependencies]
+metrics = ["psutil>=5.9"]
+test = ["pytest>=8"]
+
+[project.scripts]
+kutarya-cascade = "kutarya_cascade.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+kutarya_cascade = ["data/*.jsonl"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

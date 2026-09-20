@@ -1,0 +1,27 @@
+{
+  "checked_at_local": "2026-09-20",
+  "python": "3.12.10",
+  "gpu": {
+    "name": "NVIDIA GeForce GTX 1650",
+    "memory_total_mb": 4096,
+    "driver": "572.42"
+  },
+  "expected_model": {
+    "path": "D:\\Kutarya\\KutaryaModelLab\\models\\Qwen3-4B-Q6_K.gguf",
+    "exists": false,
+    "historical_size_bytes": 3306260704,
+    "historical_format": "GGUF Q6_K"
+  },
+  "runtime": {
+    "path": "%APPDATA%\\kutarya-studio\\yerel\\motor\\b10549\\llama-server.exe",
+    "exists": true,
+    "version": "0.1.2-dev",
+    "build": 10549,
+    "commit": "b2e5e9b28"
+  },
+  "local_model_search": {
+    "drives": ["C:", "D:"],
+    "qwen_or_gguf_copies_found": 0,
+    "recycle_bin_candidate_found": false
+  }
+}

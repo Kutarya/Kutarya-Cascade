@@ -1,0 +1,23 @@
+{
+  "status": "blocked",
+  "reason": "Kutarya Us Qwen3-4B-Q6_K.gguf yerel dosyası bulunamadı",
+  "model_redownloaded": false,
+  "model_moved_or_modified": false,
+  "real_inference_executed": false,
+  "warmup_executed": false,
+  "raw_measurements": 0,
+  "metrics": {
+    "input_tokens": null,
+    "compression_ratio": null,
+    "ttft_ms": null,
+    "prefill_ms": null,
+    "total_latency_ms": null,
+    "output_tokens_per_second": null,
+    "ram_mb": null,
+    "vram_mb": null,
+    "quality": null,
+    "critical_retention": null,
+    "fallback_rate": null
+  },
+  "null_meaning": "ölçülemedi"
+}

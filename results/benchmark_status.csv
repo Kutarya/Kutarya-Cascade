@@ -1,0 +1,2 @@
+status,reason,model_path,real_inference_executed,raw_measurements,input_tokens,compression_ratio,ttft_ms,prefill_ms,total_latency_ms,output_tokens_per_second,ram_mb,vram_mb,quality,critical_retention,fallback_rate
+blocked,"Kutarya Us Qwen3-4B-Q6_K.gguf yerel dosyası bulunamadı",D:\Kutarya\KutaryaModelLab\models\Qwen3-4B-Q6_K.gguf,false,0,ölçülemedi,ölçülemedi,ölçülemedi,ölçülemedi,ölçülemedi,ölçülemedi,ölçülemedi,ölçülemedi,ölçülemedi,ölçülemedi,ölçülemedi

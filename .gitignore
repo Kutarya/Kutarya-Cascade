@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+dist/
+build/
+*.egg-info/
+results/*.json
+results/*.csv
+!results/environment_status.json
+!results/benchmark_status.json
+!results/benchmark_status.csv
