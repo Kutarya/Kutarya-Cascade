@@ -1,122 +1,94 @@
-# Kutarya Cascade v0.1 — Teknik Sözleşme
+# Kutarya Cascade v0.1 — Teknik Belirtim
 
-## 1. Amaç ve güven sınırı
+## 1. Kapsam
 
-Cascade bir doğruluk oracle'ı değildir. Promptu küçültmeye çalışırken kritik
-verinin değişmediğini deterministik kontrollerle kanıtlar; kanıtlayamazsa
-orijinali yollar. Bir sıkıştırmanın Integrity Guard'ı geçmesi, model cevabının
-doğru olacağını garanti etmez. Cevap kalitesi ayrıca baseline ile ölçülür.
+Cascade, istem dönüşümlerinde kritik bilgilerin korunmasını deterministik kontrollerle doğrular. Dönüşüm doğrulanamazsa özgün istem kullanılır. Bu kontrol, model çıktısının doğruluğunu garanti etmez; çıktı kalitesi ayrıca baseline ile karşılaştırılmalıdır.
 
-Temel invariant:
+Temel kural:
 
 ```text
-candidate güvenli değilse sent_prompt == original_prompt
+candidate doğrulanmazsa sent_prompt == original_prompt
 ```
 
 ## 2. Prompt Inspector
 
-Inspector dış model çağırmaz. Aşağıdaki artefaktları konum ve özgün değerle
-çıkarır:
+Inspector harici model kullanmadan aşağıdaki öğeleri konumları ve özgün değerleriyle tespit eder:
 
-| Tür | Koruma yöntemi |
+| Tür | Kapsam |
 |---|---|
-| Negation | Türkçe/İngilizce olumsuzluk sözlüğü, Unicode-aware sınırlar |
-| Sayı | işaretli, ondalık, yüzde biçimleri |
+| Olumsuzluk | Türkçe ve İngilizce olumsuzluk kalıpları |
+| Sayı | İşaretli, ondalık ve yüzde biçimleri |
 | Tarih | ISO ve gün/ay/yıl biçimleri |
-| Para | sembol ve TL/TRY/USD/EUR/GBP biçimleri |
-| Birim | süre, veri, elektrik, uzunluk, ağırlık ve token/s biçimleri |
-| Entity | büyük harfli çok sözcüklü adlar |
-| Quote | tek/çift/typographic tırnak blokları |
-| Kod | fenced ve inline kod |
-| JSON | `json.JSONDecoder` ile gerçekten parse edilen object/array |
-| Operatör | eşitlik, karşılaştırma, boolean ve aritmetik operatörler |
-| Talimat | satır başındaki güçlü Türkçe/İngilizce emir kalıpları |
+| Para ve birim | Yaygın para, süre, veri, uzunluk ve ağırlık biçimleri |
+| Varlık | Büyük harfli çok sözcüklü adlar |
+| Alıntı | Tek, çift ve tipografik tırnak blokları |
+| Kod ve JSON | Fenced/inline kod ve ayrıştırılabilir JSON |
+| Operatör | Karşılaştırma, boolean ve aritmetik operatörler |
+| Talimat | Güçlü Türkçe ve İngilizce emir kalıpları |
 
-Risk skoru artefakt türlerinin açıklanabilir ağırlıklı toplamıdır. Kod/JSON,
-olumsuz talimat ve kısa kritik prompt ek risk getirir. Skor yalnız sıkıştırma
-kapısıdır; kalite skoru değildir.
+Risk skoru yalnız dönüşüm kapısı olarak kullanılır; kalite ölçütü değildir.
 
 ## 3. Integrity Guard
 
-Her tür için özgün ve aday metindeki normalize edilmiş değerlerin:
-
-1. çoklu kümesi,
-2. tekrar sayısı,
-3. sırası
-
-karşılaştırılır. Eksik, eklenmiş veya yeniden sıralanmış kritik değer varsa
-sonuç başarısızdır. JSON, kod ve quote içeriği tek parça olarak korunduğu için
-iç değişiklik doğrudan yakalanır.
+Özgün ve aday metindeki kritik öğelerin normalize edilmiş değerleri, tekrar sayıları ve sıraları karşılaştırılır. Eksik, eklenmiş, değiştirilmiş veya yeniden sıralanmış öğe varsa aday reddedilir.
 
 ## 4. Lossless Compressor
 
-Lossless yolu yalnız korumasız düzyazıda:
+Lossless yolu korumasız düz metinde:
 
-- yinelenen yatay whitespace'i bire indirir,
-- satır kenarı whitespace'ini kaldırır,
+- yinelenen yatay boşlukları azaltır,
+- satır kenarı boşluklarını kaldırır,
 - ikiden fazla ardışık boş satırı ikiye indirir.
 
-Kod, inline code, JSON ve quote byte-for-byte kopyalanır. Her kaldırma işlemi
-aday indeks ve kaldırılan bayt dizisi olarak restorasyon planına yazılır.
-`restore()` özgün Python string'ini tam kuramazsa çalışma hatası verir. Model
-restorasyon planını almaz; plan denetlenebilirlik içindir. Model yalnız kritik
-artefakt denetiminden geçen sade metni görür.
+Kod, inline kod, JSON ve alıntılar değiştirilmez. Restorasyon planı özgün Python string'ini tam olarak yeniden kurabilmelidir.
 
-## 5. Risk-aware Safe Compressor
+## 5. Safe Compressor
 
-Safe yol sırasıyla:
+Safe yolu:
 
-1. Promptu inceler.
-2. Risk `high` veya `critical` ise hiç değiştirmeden fallback yapar.
-3. Lossless dönüşümü uygular.
-4. Sınırlı nezaket dolgularını (`lütfen`, `please` vb.) kaldırır.
-5. Yalnız bitişik ve normalize edildiğinde tamamen aynı cümleyi tekilleştirir.
-6. Integrity Guard'ı tekrar çalıştırır.
-7. Aday boşsa, kazanç yoksa veya guard başarısızsa orijinale döner.
+1. İstemi inceler.
+2. Risk `high` veya `critical` ise özgün istemi kullanır.
+3. Lossless dönüşümünü uygular.
+4. Sınırlı nezaket dolgularını kaldırır.
+5. Yalnız bitişik ve tamamen aynı cümleleri tekilleştirir.
+6. Integrity Guard doğrulamasını tekrarlar.
+7. Aday boşsa, kazanç sağlamıyorsa veya doğrulama başarısızsa özgün isteme döner.
 
-Bu sürüm serbest özetleme, cümle yeniden yazma, eşanlamlı değiştirme veya başka
-bir LLM ile prompt sıkıştırma yapmaz.
+v0.1; serbest özetleme, yeniden yazma, eşanlamlı değiştirme veya başka bir LLM ile sıkıştırma yapmaz.
 
-## 6. Fallback nedenleri
+## 6. Fallback kodları
 
-| Kod | Anlam |
+| Kod | Açıklama |
 |---|---|
-| `risk_gate:high` | kritik bilgi yoğunluğu yüksek |
-| `risk_gate:critical` | kod/JSON veya çok yoğun kritik bilgi |
-| `integrity_guard` | kritik artefakt eksik/ek/farklı sırada |
-| `empty_candidate` | aday boş kaldı |
-| `no_gain` | aday özgünden kısa değil |
-| `restore_failed` | lossless exact restorasyon doğrulanmadı |
+| `risk_gate:high` | Yüksek kritik bilgi yoğunluğu |
+| `risk_gate:critical` | Kod, JSON veya çok yoğun kritik bilgi |
+| `integrity_guard` | Kritik öğe doğrulaması başarısız |
+| `empty_candidate` | Aday metin boş |
+| `no_gain` | Aday özgün metinden kısa değil |
+| `restore_failed` | Kayıpsız restorasyon doğrulanamadı |
 
-## 7. Benchmark adaleti
+## 7. Benchmark kuralları
 
-- Tek model dosyası ve tek llama.cpp süreci kullanılır.
-- Sistem promptu ve generation ayarları üç yolda aynıdır.
-- `temperature=0`, `top_p=1`, `top_k=40`, `seed=42` varsayılandır.
-- `cache_prompt=false` kullanılır.
-- Her mod warm-up görür.
-- Her vaka en az iki, varsayılan üç kez ölçülür.
-- Mod sırası her tekrar içinde sabit seed ile karıştırılır.
-- Baseline ve aday kalite sinyali aynı vaka/tekrar grubunda karşılaştırılır.
-- Adayın kalite skoru baseline'dan düşükse `quality_regression=true` ve
-  `cascade_failure=true` olur.
-- Ham kayıtlar elenmeden JSON/CSV'ye yazılır.
+- Aynı model dosyası ve llama.cpp süreci kullanılır.
+- Sistem istemi ve üretim ayarları tüm yollarda aynıdır.
+- Varsayılanlar: `temperature=0`, `top_p=1`, `top_k=40`, `seed=42`.
+- Prompt cache kapalıdır.
+- Her yol için warm-up uygulanır.
+- Her vaka varsayılan olarak üç kez ölçülür.
+- Yol sırası sabit seed ile karıştırılır.
+- Ham kayıtlar filtrelenmeden JSON ve CSV'ye yazılır.
+- Aday kalite skoru baseline değerinden düşükse regresyon kaydedilir.
 
-## 8. Ölçüm tanımları
+## 8. Ölçümler
 
-`TTFT` istemci duvar saatidir. `prefill_ms` yalnız llama.cpp timing alanı
-sağlarsa doldurulur; TTFT'den tahmin edilmez. RAM süreç RSS'dir; psutil yoksa
-ölçülmez. VRAM `nvidia-smi` toplam GPU ölçümüdür ve başka süreçlerden
-etkilenebilir. Bu sınırlama her kaydın `gpu_scope` alanındadır.
+TTFT istemci duvar saatidir. Prefill yalnız sunucu timing alanı sağlarsa kaydedilir. RAM süreç RSS değeridir. VRAM ölçümü `nvidia-smi` toplam GPU kullanımına dayanır ve süreç dışı yüklerden etkilenebilir. Ölçülemeyen değerler tahmin edilmez.
 
-## 9. Başarısızlık tanımı
+## 9. Başarısızlık koşulları
 
-Aşağıdakilerden biri Cascade başarısızlığıdır:
+Aşağıdaki durumlardan biri Cascade başarısızlığıdır:
 
-- kritik artefakt korunmadı,
-- safe/lossless kalite skoru aynı tekrar baseline skorunun altına düştü,
-- sıkıştırılmış yol gerekli çıktı kısıtını kaybetti.
+- Kritik öğe korunmamıştır.
+- Safe veya lossless kalite skoru baseline değerinin altındadır.
+- Dönüştürülmüş istem gerekli çıktı kısıtını kaybetmiştir.
 
-Latency artışı güvenlik başarısızlığı değildir fakat “avantaj sağladı” olarak
-raporlanmaz. Token azalması yoksa yalnız karakter azalmasına bakılarak performans
-iddiası yazılmaz.
+Token azalması veya gecikme iyileşmesi ölçülmeden yalnız karakter sayısına dayanarak performans iddiası yapılamaz.

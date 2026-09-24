@@ -1,16 +1,17 @@
 # Değişiklik Günlüğü
 
+Bu dosya Kutarya Cascade sürümlerindeki kullanıcıya dönük değişiklikleri kaydeder.
+
 ## 0.1.0 — 2026-09-20
 
-- Prompt Inspector ve açıklanabilir risk sınıflandırması.
-- Integrity Guard ile kritik artefakt koruması.
-- Exact-restorable Lossless Compressor.
-- Risk-aware Safe Compressor ve fail-closed fallback.
-- llama.cpp streaming runtime ve üç yollu benchmark.
-- Türkçe/İngilizce 30 vakalık veri seti.
-- JSON/CSV ham ölçüm çıktıları.
-- 44 unit/integration ve yayın paketi testi.
-- BSD-4-Clause Kutarya atıf lisansı.
+- Prompt Inspector ve açıklanabilir risk sınıflandırması eklendi.
+- Integrity Guard ile kritik öğe doğrulaması eklendi.
+- Geri döndürülebilir Lossless Compressor eklendi.
+- Risk kontrollü Safe Compressor ve fail-closed fallback eklendi.
+- llama.cpp streaming istemcisi ve üç yollu benchmark eklendi.
+- 15 Türkçe ve 15 İngilizce vakadan oluşan veri seti eklendi.
+- JSON ve CSV ham ölçüm çıktıları eklendi.
+- 44 birim, entegrasyon ve yayın testi tamamlandı.
+- BSD-4-Clause lisansı ve Kutarya atıf koşulu uygulandı.
 
-Gerçek Qwen benchmarkı v0.1.0 yayınında model dosyası bulunmadığı için mevcut
-değildir; performans iddiası yapılmamıştır.
+Gerçek Qwen benchmarkı, gerekli model dosyası bulunmadığı için v0.1.0 kapsamında çalıştırılmadı. Bu sürüm gerçek model performansı hakkında iddia içermez.

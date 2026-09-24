@@ -1,16 +1,13 @@
 # Katkı Rehberi
 
-Katkılar kabul edilir. Değişiklik göndermeden önce:
+Katkı göndermeden önce:
 
-1. Ayrı bir branch açın.
-2. Davranış değişikliği için test ekleyin.
+1. Değişiklik için ayrı bir branch oluşturun.
+2. Davranış değişikliği varsa ilgili testleri ekleyin veya güncelleyin.
 3. `python -m unittest discover -s tests -v` komutunu çalıştırın.
-4. Performans iddiasını yalnız ham JSON/CSV ölçümüyle destekleyin.
-5. Kritik retention ihlalini veya ölçülemeyen metriği gizlemeyin.
+4. Performans iddialarını ham JSON/CSV ölçümleriyle destekleyin.
+5. Kritik öğe ihlallerini, fallback durumlarını ve ölçülemeyen alanları açıkça belirtin.
 
-Pull request açıklamasında değişikliğin amacı, riskleri ve çalıştırılan testler
-yer almalıdır. Katkı göndererek katkınızın depo lisansı altında dağıtılmasını
-kabul etmiş olursunuz.
+Pull request açıklamasında değişikliğin amacı, kapsamı, riskleri ve çalıştırılan testler yer almalıdır. İlgisiz değişiklikleri aynı pull request içinde birleştirmeyin.
 
-Lisansın görünür Kutarya atıf koşulu katkılarda ve türetilmiş dağıtımlarda da
-korunmalıdır. Ayrıntı için `LICENSE` ve `NOTICE` dosyalarına bakın.
+Katkı gönderilmesi, katkının depo lisansı altında dağıtılmasını kabul ettiğiniz anlamına gelir. Kutarya atıf koşulu katkılarda ve türetilmiş dağıtımlarda korunmalıdır. Ayrıntılar için [LICENSE](LICENSE) ve [NOTICE](NOTICE) dosyalarına bakın.
